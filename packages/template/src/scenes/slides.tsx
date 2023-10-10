@@ -62,10 +62,36 @@ const images = [
   Slide21,
 ];
 
+const slideNames = [
+"A1S1",
+"A1S2",
+"A1S3",
+"A1S4",
+"A1S5",
+"A2S1a",
+"A2S1b",
+"A2S1c",
+"A2S2",
+"A2S3",
+"A2S4",
+"A2S5",
+"A2S6",
+"A2S7",
+"A3S1",
+"A3S2",
+"A3S3",
+"A3S4",
+"A3S5",
+"A3S6",
+"A3S7",
+];
+
+
 export default makeScene2D(function* (view) {
   const opacitySignal = useScene().variables.get('opacity', 0);
   const imageSignal = useScene().variables.get('slide', 0);
   const imgRef = createRef<Img>();
+  const textRef = createRef<Txt>();
   view.add(
     <Rect layout direction={'column'}>
       <Rect layout direction={'row'}>
@@ -85,14 +111,17 @@ export default makeScene2D(function* (view) {
 
   view.add(
     <Txt
-      text={() => `Opacity = ${opacitySignal()}`}
+	  ref={textRef}
       x={200}
+	  y={400}
       fill={'red'}
       height={100}
     ></Txt>,
   );
   for (const image of images) {
     imgRef().src(image);
-    yield* beginSlide(`image${images.indexOf(image)}`);
+	const idx = images.indexOf(image);
+	textRef().text(`BILD ${idx} SZENE ${slideNames[idx]}`);
+    yield* beginSlide(`Image${idx}Slide${slideNames[idx]}`);
   }
 });

@@ -26,7 +26,9 @@ function handler(dmxData: number[], presenter: Presenter) {
 }
 
 let slide: number = 0;
-let wasAtThreshold: Boolean;
+let opacityWasAtThreshold: Boolean;
+let lastSlideWasAtZero: Boolean;
+let nextSlideWasAtZero: Boolean;
 const THRESHOLD = 250;
 function handler2(dmxData: number[], presenter: Presenter) {
   if (!currentScene && dmxData[0] > 0) {
@@ -35,15 +37,31 @@ function handler2(dmxData: number[], presenter: Presenter) {
     )[0];
   }
   if (currentScene) {
-    if (dmxData[1] > THRESHOLD && !wasAtThreshold) {
-      wasAtThreshold = true;
+    if (dmxData[1] > THRESHOLD && !opacityWasAtThreshold) {
+		opacityWasAtThreshold = true;
     }
-    if (dmxData[1] === 0 && wasAtThreshold) {
-      slide++;
-      wasAtThreshold = false;
+    if (dmxData[1] === 0 && opacityWasAtThreshold) {
+      opacityWasAtThreshold = false;
       presenter.requestNextSlide();
     }
-    currentScene.variables.updateSignals({
+	if (dmxData[2] === 0 && !lastSlideWasAtZero) {
+		lastSlideWasAtZero = true;
+	}
+	if (dmxData[2] === 102 && lastSlideWasAtZero) {
+		lastSlideWasAtZero = false;
+		presenter.requestFirstSlide();
+	} else if (dmxData[2] > 0 && lastSlideWasAtZero) {
+		lastSlideWasAtZero = false;
+		presenter.requestPreviousSlide();
+	}
+	if (dmxData[3] === 0 && !nextSlideWasAtZero) {
+		nextSlideWasAtZero = true;
+	}
+	if (dmxData[3] > 0 && nextSlideWasAtZero) {
+		nextSlideWasAtZero = false;
+		presenter.requestNextSlide();
+	}
+	currentScene.variables.updateSignals({
       opacity: dmxData[1] / 255,
     });
   }

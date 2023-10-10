@@ -64,6 +64,7 @@ export class Presenter {
   public readonly playback: PlaybackManager;
   private readonly status: PlaybackStatus;
   private readonly logger: Logger;
+  public scenes: Scene[];
   private abortController: AbortController | null = null;
   private renderTime = 0;
   private requestId: number | null = null;
@@ -91,6 +92,7 @@ export class Presenter {
       });
       scenes.push(scene);
     }
+    this.scenes = scenes;
     this.playback.setup(scenes);
   }
 

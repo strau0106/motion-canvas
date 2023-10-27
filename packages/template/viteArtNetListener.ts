@@ -24,7 +24,8 @@ export default function viteArtNetListener(): Plugin {
       server.ws.on('connection', () => {
         const controller = new ArtNetController();
         console.log('binding');
-        controller.bind('10.102.232.46'); //
+        controller.bind('10.102.254.113');
+		
         function handler(dmx: ArtDmx) {
           console.log('dmx', dmx.data.slice(0, 4));
           server.ws.send('dmx:data', dmx.data.slice(0, 4));
